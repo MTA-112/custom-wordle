@@ -1,0 +1,12 @@
+{
+  "java.configuration.runtimes": [
+    {
+      "name": "JavaSE-21",
+      "path": "/Users/abhinavojha/work/installs/jdk-21.0.9.jdk/Contents/Home",
+      "default": true
+    }
+  ],
+  "java.project.referencedLibraries": [
+    "installs/javafx-sdk-17.0.17/lib/**/*.jar"
+  ]
+}

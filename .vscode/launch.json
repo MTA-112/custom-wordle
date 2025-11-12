@@ -1,0 +1,12 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "java",
+      "name": "Run WordleApp",
+      "request": "launch",
+      "mainClass": "WordleApp",
+      "vmArgs": "--module-path /Users/abhinavojha/work/wordle/custom-wordle/installs/javafx-sdk-17.0.17/lib --add-modules javafx.controls"
+    }
+  ]
+}
