@@ -2,14 +2,14 @@
 set -euo pipefail
 
 if [[ $# -lt 1 ]]; then
-  echo "Usage: $0 /path/to/jdk-21-xxx.tar.gz"
+  echo "Usage: $0 /path/to/jdk-21-xxx.(tar.gz|tgz|zip)"
   exit 1
 fi
 
-TARBALL="$1"
+ARCHIVE="$1"
 
-if [[ ! -f "$TARBALL" ]]; then
-  echo "ERROR: Tarball not found: $TARBALL"
+if [[ ! -f "$ARCHIVE" ]]; then
+  echo "ERROR: Archive not found: $ARCHIVE"
   exit 1
 fi
 
@@ -18,10 +18,23 @@ BASE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$BASE_DIR"
 
 echo "Install dir: $BASE_DIR"
-echo "Using tarball: $TARBALL"
+echo "Using archive: $ARCHIVE"
 
-# Extract JDK into install dir
-tar -xzf "$TARBALL" -C "$BASE_DIR"
+# Extract depending on extension
+case "$ARCHIVE" in
+  *.tar.gz|*.tgz)
+    echo "Extracting tar.gz..."
+    tar -xzf "$ARCHIVE" -C "$BASE_DIR"
+    ;;
+  *.zip)
+    echo "Extracting zip..."
+    unzip -q "$ARCHIVE" -d "$BASE_DIR"
+    ;;
+  *)
+    echo "ERROR: Unsupported archive type. Use .tar.gz, .tgz, or .zip"
+    exit 1
+    ;;
+esac
 
 # Prefer jdk-21*; fallback to any jdk-*
 JDK_DIR=$(find "$BASE_DIR" -maxdepth 1 -type d -name 'jdk-21*' | sort | tail -n 1 || true)
@@ -73,19 +86,7 @@ echo "Created:"
 echo "  $BASE_DIR/use-jv.sh   (bash/zsh/Git Bash/WSL)"
 echo "  $BASE_DIR/use-jv.ps1  (PowerShell)"
 
-OS_NAME="\$(uname -s 2>/dev/null || echo Unknown)"
 echo
 echo "To ACTIVATE Java 21 in this shell:"
-case "\$OS_NAME" in
-  Darwin|Linux*)
-    echo "  source $BASE_DIR/use-jv.sh"
-    ;;
-  MINGW*|MSYS*|CYGWIN*)
-    echo "  In PowerShell: .\\use-jv.ps1"
-    echo "  In Git Bash:   source use-jv.sh"
-    ;;
-  *)
-    echo "  Unix shells:   source use-jv.sh"
-    echo "  PowerShell:    .\\use-jv.ps1"
-    ;;
-esac
+echo "  Unix shells:   source $BASE_DIR/use-jv.sh"
+echo "  PowerShell:    .\\use-jv.ps1"
